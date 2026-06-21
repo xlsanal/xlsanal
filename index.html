@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xlsanal | Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+        }
+
+        body {
+            /* Daha derin, kaliteli mor-siyah premium arka plan */
+            background-color: #020205; 
+            color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Arka plandaki devasa siber neon ışıklar */
+        .bg-glow-1 {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(0,0,0,0) 70%);
+            top: -20%;
+            left: -10%;
+            z-index: 0;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, rgba(0,0,0,0) 70%);
+            bottom: -20%;
+            right: -10%;
+            z-index: 0;
+        }
+
+        /* Arka Plandaki Hafif Transparan Developer Şekilleri */
+        .bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            font-family: monospace;
+            user-select: none;
+        }
+
+        .shape {
+            position: absolute;
+            color: rgba(139, 92, 246, 0.12); /* Çok hafif, göz yormayan transparanlık */
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Şekillerin haritadaki rastgele yerleri */
+        .sh-1 { top: 15%; left: 45%; font-size: 20px; }
+        .sh-2 { top: 25%; left: 80%; font-size: 24px; }
+        .sh-3 { top: 70%; left: 15%; font-size: 18px; }
+        .sh-4 { top: 55%; left: 50%; font-size: 22px; }
+        .sh-5 { top: 80%; left: 75%; font-size: 16px; }
+        .sh-6 { top: 40%; left: 8%; font-size: 26px; }
+
+        /* Üst Menü / Navbar */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .logo span {
+            color: #8b5cf6;
+        }
+
+        /* Terminal İstatistik Paneli */
+        .header-stats {
+            display: flex;
+            gap: 25px;
+            font-size: 11px;
+            color: #4b5563;
+            letter-spacing: 1px;
+        }
+
+        .stat-item span {
+            color: #8b5cf6;
+            font-weight: bold;
+        }
+
+        .flag-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tr-flag {
+            width: 40px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tr-flag:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Ana İçerik Alanı */
+        main {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            flex-grow: 1;
+            z-index: 10;
+        }
+
+        /* Sol Taraf: Profil ve Açıklama */
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .custom-pp {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid #2d3748;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Rahatsız Etmeyin (Do Not Disturb) Modu */
+        .status-dnd {
+            width: 20px;
+            height: 20px;
+            background-color: #f04747;
+            border: 3px solid #020205;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            box-shadow: 0 0 12px rgba(240, 71, 71, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-dnd::before {
+            content: '';
+            width: 10px;
+            height: 2px;
+            background-color: #020205;
+            border-radius: 1px;
+        }
+
+        /* Keskin Başlık Tasarımı */
+        .hero-left h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 54px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ffffff 40%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.2));
+            text-transform: lowercase;
+        }
+
+        .about-section {
+            background: rgba(10, 11, 18, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 20px 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .about-title {
+            font-size: 11px;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .about-text {
+            font-size: 16px;
+            color: #d1d5db;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sağ Taraf: İletişim Paneli */
+        .hero-right {
+            background: rgba(6, 6, 12, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .right-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8b5cf6;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .right-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .web-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-discord {
+            background: rgba(88, 101, 242, 0.05);
+            color: #5865f2;
+            border: 1px solid rgba(88, 101, 242, 0.2);
+        }
+
+        .btn-discord:hover {
+            background: #5865f2;
+            color: #ffffff;
+            box-shadow: 0 0 25px rgba(88, 101, 242, 0.35);
+            transform: scale(1.02);
+        }
+
+        .btn-bluesky {
+            background: rgba(0, 133, 255, 0.05);
+            color: #0085ff;
+            border: 1px solid rgba(0, 133, 255, 0.2);
+        }
+
+        .btn-bluesky:hover {
+            background: #0085ff;
+            color: #ffffff;
+            box-shadow: 0 0 25px rgba(0, 133, 255, 0.35);
+            transform: scale(1.02);
+        }
+
+        .btn-gunslol {
+            background: rgba(243, 244, 246, 0.02);
+            color: #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-gunslol:hover {
+            background: #e5e7eb;
+            color: #050508;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        .arrow {
+            font-size: 20px;
+        }
+
+        /* Alt Bilgi */
+        footer {
+            width: 100%;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 12px;
+            color: #374151;
+            letter-spacing: 2px;
+            z-index: 10;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .header-stats {
+                display: none;
+            }
+            main {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding-top: 30px;
+            }
+            .hero-left {
+                align-items: center;
+                text-align: center;
+            }
+            .about-section {
+                margin: 0 auto 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Arka plan parlamaları -->
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <!-- Arka Plandaki Developer Logoları/Şekilleri -->
+    <div class="bg-shapes">
+        <div class="shape sh-1">&lt;/&gt;</div>
+        <div class="shape sh-2">&gt;_</div>
+        <div class="shape sh-3">◽</div>
+        <div class="shape sh-4">{ }</div>
+        <div class="shape sh-5">+</div>
+        <div class="shape sh-6">&lt;dev&gt;</div>
+    </div>
+
+    <!-- Üst Menü -->
+    <header>
+        <div class="logo">XLSANAL<span>.</span></div>
+        
+        <div class="header-stats">
+            <div class="stat-item">STATUS: <span>ONLINE</span></div>
+            <div class="stat-item">LOC: <span>TR//EST</span></div>
+            <div class="stat-item">CORE: <span>V2.6</span></div>
+        </div>
+
+        <div class="flag-container">
+            <img class="tr-flag" src="https://flagcdn.com/w160/tr.png" alt="Türkiye">
+        </div>
+    </header>
+
+    <!-- Ana İçerik Bölümü -->
+    <main>
+        <!-- Sol Panel -->
+        <div class="hero-left">
+            <div class="avatar-container">
+                <img class="custom-pp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStVrs9GxiJrC1wJ8c7JDIQJxdvgwwGoWpvCVe9eIgwYN0CJoRE1TrSo5M&s=10" alt="xlsanal profile">
+                <div class="status-dnd"></div>
+            </div>
+            <h1>xlsanal</h1>
+            
+            <div class="about-section">
+                <div class="about-title">Hakkımda</div>
+                <div class="about-text">4mınoglu developerlik.</div>
+            </div>
+        </div>
+
+        <!-- Sağ Panel -->
+        <div class="hero-right">
+            <div class="right-title">İletişim & Ağ</div>
+            <div class="links-grid">
+                
+                <!-- Discord -->
+                <a href="https://discord.com/users/371726211636002816" target="_blank" class="web-btn btn-discord">
+                    <span>DISCORD_NETWORK</span>
+                    <span class="arrow">// →</span>
+                </a>
+
+                <!-- Bluesky -->
+                <a href="https://bsky.app/profile/xlsanal.is-a.dev" target="_blank" class="web-btn btn-bluesky">
+                    <span>BLUESKY_CONNECT</span>
+                    <span class="arrow">// →</span>
+                </a>
+
+                <!-- Guns.lol -->
+                <a href="https://guns.lol/xlsanal" target="_blank" class="web-btn btn-gunslol">
+                    <span>GUNSLOL_SECURE</span>
+                    <span class="arrow">// →</span>
+                </a>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Alt Kısım -->
+    <footer>
+        SYS.LOC // XLSANAL.IS-A.DEV // © 2026
+    </footer>
+
+</body>
+</html>
