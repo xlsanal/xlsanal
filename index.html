@@ -1,445 +1,1124 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xlsanal | Developer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Consolas', 'Courier New', Courier, monospace;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xlsanal — Backend Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            /* Daha derin, kaliteli mor-siyah premium arka plan */
-            background-color: #020205; 
-            color: #f3f4f6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow-x: hidden;
-        }
+    :root {
+      --bg:        #0D0F14;
+      --surface:   #130F0F;
+      --surface2:  #1A1212;
+      --accent:    #E5142A;
+      --accent-lt: #FF4D60;
+      --accent-dim: rgba(229,20,42,0.13);
+      --text:      #E2E8F0;
+      --muted:     #64748B;
+      --border:    #221616;
+      --green:     #22C55E;
+      --red:       #E5142A;
+    }
 
-        /* Arka plandaki devasa siber neon ışıklar */
-        .bg-glow-1 {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(0,0,0,0) 70%);
-            top: -20%;
-            left: -10%;
-            z-index: 0;
-        }
+    html { scroll-behavior: smooth; }
 
-        .bg-glow-2 {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, rgba(0,0,0,0) 70%);
-            bottom: -20%;
-            right: -10%;
-            z-index: 0;
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-        /* Arka Plandaki Hafif Transparan Developer Şekilleri */
-        .bg-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            font-family: monospace;
-            user-select: none;
-        }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
-        .shape {
-            position: absolute;
-            color: rgba(139, 92, 246, 0.12); /* Çok hafif, göz yormayan transparanlık */
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
-        }
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(13,15,20,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
 
-        /* Şekillerin haritadaki rastgele yerleri */
-        .sh-1 { top: 15%; left: 45%; font-size: 20px; }
-        .sh-2 { top: 25%; left: 80%; font-size: 24px; }
-        .sh-3 { top: 70%; left: 15%; font-size: 18px; }
-        .sh-4 { top: 55%; left: 50%; font-size: 22px; }
-        .sh-5 { top: 80%; left: 75%; font-size: 16px; }
-        .sh-6 { top: 40%; left: 8%; font-size: 26px; }
+    .nav-left { display: flex; align-items: center; gap: 14px; }
 
-        /* Üst Menü / Navbar */
-        header {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-        }
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text);
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
 
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem; font-weight: 600;
+      color: #fff;
+    }
 
-        .logo span {
-            color: #8b5cf6;
-        }
+    /* Turkish flag in nav */
+    .tr-flag {
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: default;
+      user-select: none;
+      display: flex; align-items: center;
+    }
 
-        /* Terminal İstatistik Paneli */
-        .header-stats {
-            display: flex;
-            gap: 25px;
-            font-size: 11px;
-            color: #4b5563;
-            letter-spacing: 1px;
-        }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      list-style: none;
+    }
 
-        .stat-item span {
-            color: #8b5cf6;
-            font-weight: bold;
-        }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
 
-        .flag-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
 
-        .tr-flag {
-            width: 40px;
-            height: auto;
-            border-radius: 4px;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
+    /* Language toggle */
+    .lang-toggle {
+      display: flex; align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
 
-        .tr-flag:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
-        }
+    .lang-btn {
+      padding: 5px 12px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+      border: none; background: none;
+      font-family: inherit; font-size: inherit;
+    }
 
-        /* Ana İçerik Alanı */
-        main {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            flex-grow: 1;
-            z-index: 10;
-        }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
 
-        /* Sol Taraf: Profil ve Açıklama */
-        .hero-left {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    /* DND badge */
+    .dnd-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 20px;
+      font-size: 0.72rem; font-weight: 500;
+      color: #FCA5A5;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: default;
+      white-space: nowrap;
+    }
 
-        .avatar-container {
-            position: relative;
-            margin-bottom: 30px;
-        }
+    .dnd-dot {
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse-red 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
 
-        .custom-pp {
-            width: 130px;
-            height: 130px;
-            object-fit: cover;
-            border-radius: 16px;
-            border: 2px solid #2d3748;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-        }
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px 48px 80px;
+      position: relative; overflow: hidden;
+    }
 
-        /* Rahatsız Etmeyin (Do Not Disturb) Modu */
-        .status-dnd {
-            width: 20px;
-            height: 20px;
-            background-color: #f04747;
-            border: 3px solid #020205;
-            border-radius: 50%;
-            position: absolute;
-            bottom: -5px;
-            right: -5px;
-            box-shadow: 0 0 12px rgba(240, 71, 71, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    /* subtle grid bg */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(229,20,42,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(229,20,42,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
 
-        .status-dnd::before {
-            content: '';
-            width: 10px;
-            height: 2px;
-            background-color: #020205;
-            border-radius: 1px;
-        }
+    /* glow */
+    .hero-glow {
+      position: absolute; top: 10%; right: 5%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(229,20,42,0.09) 0%, transparent 65%);
+      pointer-events: none;
+    }
 
-        /* Keskin Başlık Tasarımı */
-        .hero-left h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 54px;
-            font-weight: 900;
-            letter-spacing: -1px;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #ffffff 40%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.2));
-            text-transform: lowercase;
-        }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 72px; align-items: center;
+      position: relative;
+    }
 
-        .about-section {
-            background: rgba(10, 11, 18, 0.4);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 20px 25px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 450px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 12px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(229,20,42,0.3);
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; color: var(--accent-lt);
+      margin-bottom: 18px;
+    }
 
-        .about-title {
-            font-size: 11px;
-            color: #4b5563;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-        }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.6rem, 5vw, 3.8rem);
+      font-weight: 700; line-height: 1.1;
+      margin-bottom: 8px;
+    }
 
-        .about-text {
-            font-size: 16px;
-            color: #d1d5db;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+    .name-highlight {
+      color: var(--accent-lt);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.2em;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
 
-        /* Sağ Taraf: İletişim Paneli */
-        .hero-right {
-            background: rgba(6, 6, 12, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-        }
+    .hero-terminal {
+      margin: 18px 0 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: var(--accent-lt);
+      min-height: 1.6em;
+    }
+    .hero-terminal::before { content: '> '; color: var(--muted); }
 
-        .right-title {
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #8b5cf6;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--accent-lt);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
 
-        .right-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(139, 92, 246, 0.2);
-        }
+    .hero-desc {
+      color: var(--muted);
+      font-size: 0.95rem; line-height: 1.75;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
 
-        .links-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+    .hero-btns {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
 
-        .web-btn {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    .btn {
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.18s;
+      display: inline-flex; align-items: center; gap: 8px;
+      border: none;
+    }
 
-        .btn-discord {
-            background: rgba(88, 101, 242, 0.05);
-            color: #5865f2;
-            border: 1px solid rgba(88, 101, 242, 0.2);
-        }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #C0102A; transform: translateY(-1px); }
 
-        .btn-discord:hover {
-            background: #5865f2;
-            color: #ffffff;
-            box-shadow: 0 0 25px rgba(88, 101, 242, 0.35);
-            transform: scale(1.02);
-        }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent-lt); }
 
-        .btn-bluesky {
-            background: rgba(0, 133, 255, 0.05);
-            color: #0085ff;
-            border: 1px solid rgba(0, 133, 255, 0.2);
-        }
+    /* ─── PROFILE CARD ─── */
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+    }
 
-        .btn-bluesky:hover {
-            background: #0085ff;
-            color: #ffffff;
-            box-shadow: 0 0 25px rgba(0, 133, 255, 0.35);
-            transform: scale(1.02);
-        }
+    .profile-card::after {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 55%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
 
-        .btn-gunslol {
-            background: rgba(243, 244, 246, 0.02);
-            color: #e5e7eb;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    .profile-avatar-wrap {
+      position: relative;
+      width: 100px; height: 100px;
+      margin: 0 auto 16px;
+    }
 
-        .btn-gunslol:hover {
-            background: #e5e7eb;
-            color: #050508;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
-            transform: scale(1.02);
-        }
+    .profile-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+    }
 
-        .arrow {
-            font-size: 20px;
-        }
+    .status-ring {
+      position: absolute; bottom: 3px; right: 3px;
+      width: 18px; height: 18px;
+      background: var(--surface);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .status-ring::after {
+      content: '';
+      width: 11px; height: 11px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse-green 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+      60% { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+    }
 
-        /* Alt Bilgi */
-        footer {
-            width: 100%;
-            text-align: center;
-            padding: 30px 20px;
-            font-size: 12px;
-            color: #374151;
-            letter-spacing: 2px;
-            z-index: 10;
-            border-top: 1px solid rgba(255, 255, 255, 0.02);
-        }
+    .profile-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
 
-        /* Mobil Uyumluluk */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            .header-stats {
-                display: none;
-            }
-            main {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                padding-top: 30px;
-            }
-            .hero-left {
-                align-items: center;
-                text-align: center;
-            }
-            .about-section {
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+    .profile-handle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--accent-lt);
+      margin-bottom: 14px;
+    }
+
+    .profile-badges {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      justify-content: center; margin-bottom: 16px;
+    }
+
+    .badge {
+      padding: 3px 9px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(229,20,42,0.25);
+      border-radius: 12px;
+      font-size: 0.68rem; color: var(--accent-lt);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .profile-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border-radius: 10px; overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .stat {
+      background: var(--surface2);
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem; font-weight: 700;
+      color: var(--accent-lt);
+    }
+
+    .stat-lbl {
+      font-size: 0.65rem; color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 88px 48px; }
+
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; color: var(--accent-lt);
+      text-transform: uppercase; letter-spacing: 2.5px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      font-weight: 700; margin-bottom: 12px;
+    }
+
+    .section-sub {
+      color: var(--muted); max-width: 520px;
+      font-size: 0.9rem; margin-bottom: 44px;
+      line-height: 1.7;
+    }
+
+    /* ─── ABOUT ─── */
+    #about { background: var(--surface); }
+
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted); line-height: 1.8;
+      margin-bottom: 14px; font-size: 0.92rem;
+    }
+    .about-text p strong { color: var(--text); }
+
+    .timeline { display: flex; flex-direction: column; gap: 22px; }
+
+    .tl-item { display: flex; gap: 14px; }
+
+    .tl-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0; margin-top: 5px;
+      box-shadow: 0 0 8px rgba(229,20,42,0.6);
+    }
+
+    .tl-content h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600; margin-bottom: 2px;
+    }
+
+    .tl-content p { font-size: 0.8rem; color: var(--muted); }
+
+    /* ─── SKILLS ─── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-card:hover {
+      border-color: rgba(229,20,42,0.4);
+      transform: translateY(-2px);
+    }
+
+    .skill-icon { font-size: 1.6rem; margin-bottom: 9px; }
+
+    .skill-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600; margin-bottom: 3px;
+    }
+
+    .skill-desc { font-size: 0.75rem; color: var(--muted); }
+
+    .skill-bar-wrap {
+      margin-top: 9px;
+      background: var(--surface2);
+      border-radius: 4px; height: 3px; overflow: hidden;
+    }
+
+    .skill-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-lt));
+      border-radius: 4px;
+    }
+
+    /* ─── PROJECTS ─── */
+    #projects { background: var(--surface); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      transition: border-color 0.22s, transform 0.22s;
+      position: relative; overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-lt));
+      opacity: 0; transition: opacity 0.22s;
+    }
+    .project-card:hover::before { opacity: 1; }
+    .project-card:hover {
+      border-color: rgba(229,20,42,0.35);
+      transform: translateY(-3px);
+    }
+
+    .project-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 12px;
+    }
+
+    .project-icon { font-size: 1.8rem; }
+
+    .featured-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      background: rgba(229,20,42,0.15);
+      border: 1px solid rgba(229,20,42,0.35);
+      border-radius: 10px;
+      font-size: 0.65rem; color: var(--accent-lt);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 10px;
+    }
+
+    .project-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem; font-weight: 700; margin-bottom: 7px;
+    }
+
+    .project-desc {
+      font-size: 0.84rem; color: var(--muted);
+      line-height: 1.65; margin-bottom: 16px;
+    }
+
+    .project-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    .tag {
+      padding: 2px 9px;
+      background: var(--surface2);
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem; color: var(--muted);
+    }
+
+    /* ─── CONTACT ─── */
+    #contact { text-align: center; }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 52px 36px;
+      max-width: 580px; margin: 0 auto;
+      position: relative; overflow: hidden;
+    }
+
+    .contact-card::before {
+      content: '';
+      position: absolute; bottom: -80px; right: -80px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(229,20,42,0.12), transparent 70%);
+    }
+
+    .contact-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.7rem; font-weight: 700; margin-bottom: 9px;
+    }
+
+    .contact-card p {
+      color: var(--muted); margin-bottom: 28px;
+      font-size: 0.92rem; line-height: 1.7;
+    }
+
+    .social-links {
+      display: flex; gap: 10px;
+      justify-content: center; flex-wrap: wrap;
+    }
+
+    .social-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text); text-decoration: none;
+      font-size: 0.82rem; font-weight: 500;
+      transition: all 0.18s;
+    }
+    .social-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-lt);
+      transform: translateY(-1px);
+    }
+
+    .social-btn svg {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 24px 48px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .footer-left {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--muted);
+    }
+
+    .footer-right { font-size: 0.75rem; color: var(--muted); }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 820px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 90px 20px 60px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .profile-card { max-width: 320px; margin: 0 auto; }
+      section { padding: 60px 20px; }
+      .about-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* i18n hidden */
+    [data-lang] { display: none; }
+    [data-lang].visible { display: inline; }
+    [data-block-lang] { display: none; }
+    [data-block-lang].visible { display: block; }
+    [data-flex-lang] { display: none; }
+    [data-flex-lang].visible { display: flex; }
+  </style>
 </head>
 <body>
 
-    <!-- Arka plan parlamaları -->
-    <div class="bg-glow-1"></div>
-    <div class="bg-glow-2"></div>
-
-    <!-- Arka Plandaki Developer Logoları/Şekilleri -->
-    <div class="bg-shapes">
-        <div class="shape sh-1">&lt;/&gt;</div>
-        <div class="shape sh-2">&gt;_</div>
-        <div class="shape sh-3">◽</div>
-        <div class="shape sh-4">{ }</div>
-        <div class="shape sh-5">+</div>
-        <div class="shape sh-6">&lt;dev&gt;</div>
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="nav-left">
+      <a class="nav-logo" href="#">
+        <div class="logo-icon">xl</div>
+        xlsanal
+      </a>
+      <span class="tr-flag" title="Türkiye 🇹🇷">🇹🇷</span>
     </div>
 
-    <!-- Üst Menü -->
-    <header>
-        <div class="logo">XLSANAL<span>.</span></div>
-        
-        <div class="header-stats">
-            <div class="stat-item">STATUS: <span>ONLINE</span></div>
-            <div class="stat-item">LOC: <span>TR//EST</span></div>
-            <div class="stat-item">CORE: <span>V2.6</span></div>
+    <ul class="nav-links">
+      <li><a href="#about"><span data-lang="tr" class="visible">Hakkımda</span><span data-lang="en">About</span></a></li>
+      <li><a href="#skills"><span data-lang="tr" class="visible">Yetenekler</span><span data-lang="en">Skills</span></a></li>
+      <li><a href="#projects"><span data-lang="tr" class="visible">Projeler</span><span data-lang="en">Projects</span></a></li>
+      <li><a href="#contact"><span data-lang="tr" class="visible">İletişim</span><span data-lang="en">Contact</span></a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('tr')">TR</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="dnd-badge">
+        <div class="dnd-dot"></div>
+        <span data-lang="tr" class="visible">Rahatsız Etme</span>
+        <span data-lang="en">Do Not Disturb</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span>⬡</span>
+          <span data-lang="tr" class="visible">Backend Developer</span>
+          <span data-lang="en">Backend Developer</span>
         </div>
 
-        <div class="flag-container">
-            <img class="tr-flag" src="https://flagcdn.com/w160/tr.png" alt="Türkiye">
-        </div>
-    </header>
+        <h1>
+          <span data-block-lang="tr" class="visible">Merhaba, ben<br /><span class="name-highlight">xlsanal</span></span>
+          <span data-block-lang="en">Hey, I'm<br /><span class="name-highlight">xlsanal</span></span>
+        </h1>
 
-    <!-- Ana İçerik Bölümü -->
-    <main>
-        <!-- Sol Panel -->
-        <div class="hero-left">
-            <div class="avatar-container">
-                <img class="custom-pp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStVrs9GxiJrC1wJ8c7JDIQJxdvgwwGoWpvCVe9eIgwYN0CJoRE1TrSo5M&s=10" alt="xlsanal profile">
-                <div class="status-dnd"></div>
+        <div class="hero-terminal">
+          <span id="typewriter"></span><span class="cursor"></span>
+        </div>
+
+        <p class="hero-desc">
+          <span data-lang="tr" class="visible">Backend sistemleri inşa ediyorum, otomasyon çözümleri geliştiriyorum ve güvenli, ölçeklenebilir altyapılar kuruyorum. Node.js ve modern web teknolojileriyle çalışıyorum.</span>
+          <span data-lang="en">I build backend systems, develop automation solutions, and set up secure, scalable infrastructures. Working with Node.js and modern web technologies.</span>
+        </p>
+
+        <div class="hero-btns">
+          <a href="#projects" class="btn btn-primary">
+            🚀 <span data-lang="tr" class="visible">Projelerime Bak</span><span data-lang="en">My Projects</span>
+          </a>
+          <a href="#contact" class="btn btn-ghost">
+            <span data-lang="tr" class="visible">İletişim →</span><span data-lang="en">Contact →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- PROFILE CARD -->
+      <div class="profile-card fade-in">
+        <div class="profile-avatar-wrap">
+          <img
+            class="profile-avatar"
+            src="https://i.pinimg.com/736x/1e/26/db/1e26db98d009c28f41ad161d53a10b13.jpg"
+            alt="xlsanal"
+          />
+          <div class="status-ring"></div>
+        </div>
+        <div class="profile-name">xlsanal</div>
+        <div class="profile-handle">@xlsanal</div>
+        <div class="profile-badges">
+          <span class="badge">Backend Dev</span>
+          <span class="badge">Full Stack</span>
+          <span class="badge">Bot Dev</span>
+        </div>
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-val">3+</div>
+            <div class="stat-lbl"><span data-lang="tr" class="visible">Yıl Deneyim</span><span data-lang="en">Yrs Exp.</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">10+</div>
+            <div class="stat-lbl"><span data-lang="tr" class="visible">Proje</span><span data-lang="en">Projects</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">5+</div>
+            <div class="stat-lbl"><span data-lang="tr" class="visible">Teknoloji</span><span data-lang="en">Tech Stack</span></div>
+          </div>
+          <div class="stat">
+            <div class="stat-val">∞</div>
+            <div class="stat-lbl"><span data-lang="tr" class="visible">Kahve ☕</span><span data-lang="en">Coffee ☕</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="section-inner">
+      <div class="section-label">01 — <span data-lang="tr" class="visible">Hakkımda</span><span data-lang="en">About</span></div>
+      <h2 class="section-title">
+        <span data-lang="tr" class="visible">Kim bu xlsanal?</span>
+        <span data-lang="en">Who is xlsanal?</span>
+      </h2>
+      <div class="about-grid fade-in">
+        <div class="about-text">
+          <p data-block-lang="tr" class="visible">
+            Sunucu tarafında hayat bulan sistemler inşa etmekten zevk alıyorum. <strong>Node.js</strong> ekosistemi ve modern JavaScript ile backend API'lar, otomasyon araçları ve <strong>Discord botları</strong> geliştiriyorum.
+          </p>
+          <p data-block-lang="tr" class="visible">
+            Güvenlik konusuna özellikle önem veriyorum; <strong>log yönetimi, rate limiting, erişim kontrolü</strong> ve güvenli mimari tasarım benim işimin ayrılmaz parçaları.
+          </p>
+          <p data-block-lang="tr" class="visible">
+            Full-stack tarafında da rahatım — frontend'den backend'e, veritabanı tasarımından deployment'a kadar projenin tamamını sahiplenerek yürütebiliyorum.
+          </p>
+
+          <p data-block-lang="en">
+            I enjoy building systems that come alive on the server side. I develop backend APIs, automation tools, and <strong>Discord bots</strong> using the <strong>Node.js</strong> ecosystem and modern JavaScript.
+          </p>
+          <p data-block-lang="en">
+            Security is a core part of my workflow — <strong>log management, rate limiting, access control</strong>, and secure architectural design are essential parts of what I do.
+          </p>
+          <p data-block-lang="en">
+            I'm comfortable going full stack — from frontend to backend, database design to deployment, I can own an entire project end-to-end.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h4>Discord Bot <span data-lang="tr" class="visible">Geliştirme</span><span data-lang="en">Development</span></h4>
+              <p><span data-lang="tr" class="visible">Güvenlik logları, moderasyon, otomasyon sistemleri içeren gelişmiş botlar</span><span data-lang="en">Advanced bots with security logs, moderation & automation systems</span></p>
             </div>
-            <h1>xlsanal</h1>
-            
-            <div class="about-section">
-                <div class="about-title">Hakkımda</div>
-                <div class="about-text">4mınoglu developerlik.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h4>Backend API <span data-lang="tr" class="visible">Tasarımı</span><span data-lang="en">Design</span></h4>
+              <p><span data-lang="tr" class="visible">RESTful API'lar, authentication sistemleri, veritabanı entegrasyonları</span><span data-lang="en">RESTful APIs, authentication systems, database integrations</span></p>
             </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h4><span data-lang="tr" class="visible">Güvenlik & Log Sistemleri</span><span data-lang="en">Security & Log Systems</span></h4>
+              <p><span data-lang="tr" class="visible">Olay kayıt sistemleri, güvenlik denetimleri, erişim kontrolü</span><span data-lang="en">Event logging, security audits, access control</span></p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h4>Full Stack <span data-lang="tr" class="visible">Projeler</span><span data-lang="en">Projects</span></h4>
+              <p><span data-lang="tr" class="visible">Uçtan uca web uygulamaları, deployment, CI/CD süreçleri</span><span data-lang="en">End-to-end web apps, deployment, CI/CD pipelines</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS ── -->
+  <section id="skills">
+    <div class="section-inner">
+      <div class="section-label">02 — <span data-lang="tr" class="visible">Yetenekler</span><span data-lang="en">Skills</span></div>
+      <h2 class="section-title">
+        <span data-lang="tr" class="visible">Kullandığım Teknolojiler</span>
+        <span data-lang="en">Technologies I Use</span>
+      </h2>
+      <p class="section-sub">
+        <span data-lang="tr" class="visible">Projelerimi hayata geçirirken güvendiğim araçlar ve diller.</span>
+        <span data-lang="en">The tools and languages I rely on to bring projects to life.</span>
+      </p>
+      <div class="skills-grid fade-in">
+        <div class="skill-card">
+          <div class="skill-icon">🟨</div>
+          <div class="skill-name">JavaScript</div>
+          <div class="skill-desc">ES6+, async/await, <span data-lang="tr" class="visible">modüler yapı</span><span data-lang="en">modular patterns</span></div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:90%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🟩</div>
+          <div class="skill-name">Node.js</div>
+          <div class="skill-desc">Express, REST API, event-loop</div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:88%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🌐</div>
+          <div class="skill-name">HTML & CSS</div>
+          <div class="skill-desc">Semantic HTML5, responsive design</div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:80%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🤖</div>
+          <div class="skill-name">Discord.js</div>
+          <div class="skill-desc">Bot <span data-lang="tr" class="visible">geliştirme</span><span data-lang="en">development</span>, slash commands, events</div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:85%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🗄️</div>
+          <div class="skill-name"><span data-lang="tr" class="visible">Veritabanları</span><span data-lang="en">Databases</span></div>
+          <div class="skill-desc">MongoDB, SQLite, JSON</div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:75%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🔐</div>
+          <div class="skill-name"><span data-lang="tr" class="visible">Güvenlik</span><span data-lang="en">Security</span></div>
+          <div class="skill-desc">Auth, rate limiting, <span data-lang="tr" class="visible">log sistemleri</span><span data-lang="en">log systems</span></div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:78%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🐙</div>
+          <div class="skill-name">Git & GitHub</div>
+          <div class="skill-desc"><span data-lang="tr" class="visible">Versiyon kontrolü, iş akışları</span><span data-lang="en">Version control, workflows</span></div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:82%"></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🐧</div>
+          <div class="skill-name">Linux & CLI</div>
+          <div class="skill-desc">Bash, <span data-lang="tr" class="visible">sunucu yönetimi</span><span data-lang="en">server management</span>, deployment</div>
+          <div class="skill-bar-wrap"><div class="skill-bar" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-label">03 — <span data-lang="tr" class="visible">Projeler</span><span data-lang="en">Projects</span></div>
+      <h2 class="section-title">
+        <span data-lang="tr" class="visible">Yaptıklarım</span>
+        <span data-lang="en">What I've Built</span>
+      </h2>
+      <p class="section-sub">
+        <span data-lang="tr" class="visible">Gerçek projelerde geliştirdiğim sistemler ve araçlar.</span>
+        <span data-lang="en">Systems and tools I've developed in real-world projects.</span>
+      </p>
+      <div class="projects-grid fade-in">
+
+        <div class="project-card">
+          <div class="featured-badge">⭐ <span data-lang="tr" class="visible">Öne Çıkan</span><span data-lang="en">Featured</span></div>
+          <div class="project-header">
+            <div class="project-icon">🤖</div>
+          </div>
+          <div class="project-title">Advanced Discord Bot</div>
+          <div class="project-desc">
+            <span data-lang="tr" class="visible">Güvenlik odaklı, modüler Discord botu. Güvenlik log sistemi, otomatik moderasyon, üye yönetimi, slash komutları ve özel permission sistemi içeriyor. Rate limiting ve audit log özellikleriyle sunucu güvenliğini üst seviyeye taşıyor.</span>
+            <span data-lang="en">Security-focused modular Discord bot. Features a security log system, auto-moderation, member management, slash commands, and custom permission system. Rate limiting and audit logs take server security to the next level.</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">Discord.js</span>
+            <span class="tag">MongoDB</span>
+            <span class="tag"><span data-lang="tr" class="visible">Güvenlik</span><span data-lang="en">Security</span></span>
+            <span class="tag">Log</span>
+          </div>
         </div>
 
-        <!-- Sağ Panel -->
-        <div class="hero-right">
-            <div class="right-title">İletişim & Ağ</div>
-            <div class="links-grid">
-                
-                <!-- Discord -->
-                <a href="https://discord.com/users/371726211636002816" target="_blank" class="web-btn btn-discord">
-                    <span>DISCORD_NETWORK</span>
-                    <span class="arrow">// →</span>
-                </a>
-
-                <!-- Bluesky -->
-                <a href="https://bsky.app/profile/xlsanal.is-a.dev" target="_blank" class="web-btn btn-bluesky">
-                    <span>BLUESKY_CONNECT</span>
-                    <span class="arrow">// →</span>
-                </a>
-
-                <!-- Guns.lol -->
-                <a href="https://guns.lol/xlsanal" target="_blank" class="web-btn btn-gunslol">
-                    <span>GUNSLOL_SECURE</span>
-                    <span class="arrow">// →</span>
-                </a>
-
-            </div>
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon">🛡️</div>
+          </div>
+          <div class="project-title">Security Log Module</div>
+          <div class="project-desc">
+            <span data-lang="tr" class="visible">Sunucu olaylarını gerçek zamanlı takip eden kanal bazlı log sistemi. Mesaj silme/düzenleme, rol değişiklikleri ve şüpheli aktiviteleri otomatik olarak raporluyor.</span>
+            <span data-lang="en">Channel-based real-time event logging system. Automatically reports message deletions/edits, role changes, and suspicious activities.</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Discord API</span>
+            <span class="tag">Audit Log</span>
+          </div>
         </div>
-    </main>
 
-    <!-- Alt Kısım -->
-    <footer>
-        SYS.LOC // XLSANAL.IS-A.DEV // © 2026
-    </footer>
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon">⚡</div>
+          </div>
+          <div class="project-title">REST API Backend</div>
+          <div class="project-desc">
+            <span data-lang="tr" class="visible">JWT tabanlı kimlik doğrulama, rol bazlı yetkilendirme ve kapsamlı middleware katmanı içeren Express.js API. Rate limiting ve error handling ile production-ready altyapı.</span>
+            <span data-lang="en">Express.js API with JWT-based auth, role-based authorization, and comprehensive middleware. Rate limiting and error handling for a production-ready setup.</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">Express</span>
+            <span class="tag">JWT</span>
+            <span class="tag">MongoDB</span>
+          </div>
+        </div>
 
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon">🌐</div>
+          </div>
+          <div class="project-title">Bot Dashboard Panel</div>
+          <div class="project-desc">
+            <span data-lang="tr" class="visible">Discord botu için web tabanlı yönetim paneli. Sunucu istatistikleri, komut yönetimi ve log görüntüleme özelliklerini tarayıcı üzerinden sunar.</span>
+            <span data-lang="en">Web-based management panel for Discord bots. Server stats, command management, and log viewing straight from your browser.</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Node.js</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-icon">⚙️</div>
+          </div>
+          <div class="project-title"><span data-lang="tr" class="visible">Otomasyon Sistemleri</span><span data-lang="en">Automation Systems</span></div>
+          <div class="project-desc">
+            <span data-lang="tr" class="visible">Tekrarlayan görevleri otomatikleştiren CLI araçları ve scriptler. Zamanlanmış görevler ve sunucu ile entegre çalışan otomasyon çözümleri.</span>
+            <span data-lang="en">CLI tools and scripts that automate repetitive tasks. Scheduled jobs and automation solutions integrated with server infrastructure.</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">Bash</span>
+            <span class="tag">Cron</span>
+            <span class="tag">CLI</span>
+          </div>
+        </div>
+
+        <div class="project-card" style="opacity:0.45; cursor:default;">
+          <div class="project-header">
+            <div class="project-icon">🔒</div>
+          </div>
+          <div class="project-title"><span data-lang="tr" class="visible">Yeni Proje</span><span data-lang="en">New Project</span></div>
+          <div class="project-desc">
+            <span data-lang="tr" class="visible">Şu an geliştirme aşamasında. Yakında duyurulacak.</span>
+            <span data-lang="en">Currently in development. Coming soon.</span>
+          </div>
+          <div class="project-tags">
+            <span class="tag">Coming Soon</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact">
+    <div class="section-inner">
+      <div class="section-label">04 — <span data-lang="tr" class="visible">İletişim</span><span data-lang="en">Contact</span></div>
+      <h2 class="section-title">
+        <span data-lang="tr" class="visible">Bana Ulaş</span>
+        <span data-lang="en">Get In Touch</span>
+      </h2>
+      <div class="contact-card fade-in">
+        <h3>
+          <span data-lang="tr" class="visible">Bir proje mi var?</span>
+          <span data-lang="en">Got a project?</span>
+        </h3>
+        <p>
+          <span data-lang="tr" class="visible">Bot geliştirme, backend sistemleri veya full-stack projeler için iletişime geçebilirsin. <strong>Ama "rahatsız etme" modundayım</strong> — acil değilse bekleyebilir. 🙃</span>
+          <span data-lang="en">Reach out for bot development, backend systems, or full-stack projects. <strong>But I'm on "Do Not Disturb"</strong> — if it's not urgent, it can wait. 🙃</span>
+        </p>
+        <div class="social-links">
+
+          <!-- Discord -->
+          <a href="https://discord.com/users/371726211636002816" target="_blank" class="social-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+            </svg>
+            Discord
+          </a>
+
+          <!-- guns.lol -->
+          <a href="https://guns.lol/xlsanal" target="_blank" class="social-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+            guns.lol
+          </a>
+
+          <!-- E-posta -->
+          <a href="mailto:xlsanal@example.com" class="social-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span data-lang="tr" class="visible">E-posta</span><span data-lang="en">Email</span>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-left">© 2026 xlsanal</div>
+   <div class="footer-right">
+      <span data-lang="tr" class="visible">Node.js ile ❤️ yapıldı</span>
+      <span data-lang="en">Made with ❤️ using Node.js</span>
+      <br>
+      <a href="https://js.org" target="_blank" title="JS.ORG" style="color: var(--muted); text-decoration: none; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">Hosted on JS.ORG</a>
+    </div>
+  </footer>
+
+  <script>
+    // ── Language system ──
+    let currentLang = 'tr';
+
+    function setLang(lang) {
+      currentLang = lang;
+
+      // Update inline spans
+      document.querySelectorAll('[data-lang]').forEach(el => {
+        el.classList.toggle('visible', el.dataset.lang === lang);
+      });
+
+      // Update block divs (display:block)
+      document.querySelectorAll('[data-block-lang]').forEach(el => {
+        el.classList.toggle('visible', el.dataset.blockLang === lang);
+      });
+
+      // Update flex elements
+      document.querySelectorAll('[data-flex-lang]').forEach(el => {
+        el.classList.toggle('visible', el.dataset.flexLang === lang);
+      });
+
+      // Update lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+      });
+
+      document.documentElement.lang = lang;
+    }
+
+    // ── Typewriter ──
+    const phrasesTR = ['Backend Developer', 'Full Stack Developer', 'Discord Bot Creator', 'Security Enthusiast', 'Node.js Developer'];
+    const phrasesEN = ['Backend Developer', 'Full Stack Developer', 'Discord Bot Creator', 'Security Enthusiast', 'Node.js Developer'];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const target = document.getElementById('typewriter');
+
+    function type() {
+      const phrases = currentLang === 'tr' ? phrasesTR : phrasesEN;
+      const current = phrases[phraseIndex % phrases.length];
+
+      if (isDeleting) {
+        target.textContent = current.slice(0, charIndex--);
+        if (charIndex < 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          setTimeout(type, 380);
+          return;
+        }
+      } else {
+        target.textContent = current.slice(0, charIndex++);
+        if (charIndex > current.length) {
+          isDeleting = true;
+          setTimeout(type, 1800);
+          return;
+        }
+      }
+      setTimeout(type, isDeleting ? 50 : 88);
+    }
+    type();
+
+    // ── Scroll fade-in ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Active nav highlight ──
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 90) cur = s.id; });
+      navAnchors.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--accent-lt)' : '';
+      });
+    });
+  </script>
 </body>
 </html>
